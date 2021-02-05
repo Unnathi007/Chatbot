@@ -70,6 +70,7 @@ function report_issue(agent)
  agent.add("The issue reported is: "+ val +"\nThe ticket number is: "+trouble_ticket);
 }
 // trying to get status of trouble ticket
+/*
 async function get_Status(agent){
     const ticket=agent.parameters.ticket;
     var username;
@@ -85,14 +86,10 @@ async function get_Status(agent){
       await agent.add(" Username: "+username+", status: "+status);
     }
 }
+*/
 //trying to load rich response
 function custom_payload(agent)
 {
-  const issue=agent.parameters.issue;
-  if(issue=="status"){
-      agent.add("Enter your trouble ticket number");
-  }
-  else{
 	var payLoadData=
 		{
   "richContent": [
@@ -151,7 +148,6 @@ function custom_payload(agent)
 }
 agent.add(new Payload(agent.UNSPECIFIED,payLoadData,{sendAsMessage:true, rawPayload:true }));
 }
-}
 
 
 
@@ -159,7 +155,7 @@ var intentMap = new Map();
 intentMap.set("ServiceIntent", identify_User);
 intentMap.set("ServiceIntent - custom - custom", report_issue);
 intentMap.set("ServiceIntent - custom", custom_payload);
-intentMap.set("ServiceIntent - custom - custom-2", get_Status);
+//intentMap.set("ServiceIntent - custom-2", get_Status);
 agent.handleRequest(intentMap);
 
 });//Closing tag of app.post
