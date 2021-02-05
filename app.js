@@ -69,10 +69,30 @@ function report_issue(agent)
  });
  agent.add("The issue reported is: "+ val +"\nThe ticket number is: "+trouble_ticket);
 }
-
+// trying to get status of trouble ticket
+async function get_Status(agent){
+    const ticket=agent.parameters.ticket;
+    var username;
+    var status;
+    //var dbo = db.db("BroadBand");
+    const s1 = await client.db("BroadBand").collection("trouble_record").findOne({troubleTicket:ticket});
+    if(s1==null){
+      await agent.add("re-enter yout trouble ticket number");
+    }
+    else{
+      username=s1.username;
+      status=s1.status
+      await agent.add(" Username: "+username+", status: "+status);
+    }
+}
 //trying to load rich response
 function custom_payload(agent)
 {
+  const issue=agent.parameters.issue;
+  if(issue=="status"){
+      agent.add("Enter your trouble ticket number");
+  }
+  else{
 	var payLoadData=
 		{
   "richContent": [
@@ -131,7 +151,7 @@ function custom_payload(agent)
 }
 agent.add(new Payload(agent.UNSPECIFIED,payLoadData,{sendAsMessage:true, rawPayload:true }));
 }
-
+}
 
 
 
@@ -139,7 +159,7 @@ var intentMap = new Map();
 intentMap.set("ServiceIntent", identify_User);
 intentMap.set("ServiceIntent - custom - custom", report_issue);
 intentMap.set("ServiceIntent - custom", custom_payload);
-
+intentMap.set("ServiceIntent - custom - custom-2", get_Status);
 agent.handleRequest(intentMap);
 
 });//Closing tag of app.post
